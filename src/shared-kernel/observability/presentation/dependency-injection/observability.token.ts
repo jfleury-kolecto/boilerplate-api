@@ -1,0 +1,3 @@
+// Services
+export const WORKER_HEALTH_REGISTRY_SERVICE_TOKEN: unique symbol = Symbol("WORKER_HEALTH_REGISTRY_SERVICE_TOKEN");
+export const PINO_LOGGER_SERVICE_TOKEN: unique symbol = Symbol("PINO_LOGGER_SERVICE_TOKEN");

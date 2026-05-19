@@ -1,0 +1,125 @@
+{
+	"forbidden": [
+		{
+			"comment": "Circular dependencies are forbidden.",
+			"from": {},
+			"name": "no-circular",
+			"severity": "error",
+			"to": { "circular": true }
+		},
+		{
+			"comment": "Orphan files (not imported anywhere) are usually dead code.",
+			"from": {
+				"orphan": true,
+				"pathNot": [
+					"(^|/)\\.[^/]+\\.(js|cjs|mjs|ts|json)$",
+					"\\.d\\.ts$",
+					"(^|/)tsconfig\\.json$",
+					"(^|/)(src/api|src/worker)\\.ts$",
+					"(^|/)vitest\\.config\\.ts$",
+					"(^|/)drizzle\\.config\\.ts$",
+					"(^|/)\\.dependency-cruiser\\.json$"
+				]
+			},
+			"name": "no-orphans",
+			"severity": "warn",
+			"to": {}
+		},
+		{
+			"comment": "Use the @/ alias, not ../ parent imports.",
+			"from": { "path": "^src/" },
+			"name": "no-parent-imports",
+			"severity": "error",
+			"to": { "path": "^\\.\\." }
+		},
+		{
+			"comment": "Domain must be framework-agnostic (no NestJS, Drizzle, AWS, class-validator, pg, etc.).",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/domain/" },
+			"name": "domain-must-be-pure",
+			"severity": "error",
+			"to": { "path": "^node_modules/" }
+		},
+		{
+			"comment": "Domain cannot depend on application, infrastructure or presentation.",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/domain/" },
+			"name": "domain-no-upper-layers",
+			"severity": "error",
+			"to": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(application|infrastructure|presentation)/" }
+		},
+		{
+			"comment": "Application can only depend on domain (ports + primitives). No infrastructure, no presentation.",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/application/" },
+			"name": "application-no-infra-or-presentation",
+			"severity": "error",
+			"to": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(infrastructure|presentation)/" }
+		},
+		{
+			"comment": "Application must not import drizzle-orm — use repository ports instead.",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/application/" },
+			"name": "application-no-drizzle",
+			"severity": "error",
+			"to": { "path": "^node_modules/drizzle-orm" }
+		},
+		{
+			"comment": "Infrastructure implements domain ports. It must not depend on application or presentation.",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/infrastructure/" },
+			"name": "infrastructure-no-app-or-presentation",
+			"severity": "error",
+			"to": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(application|presentation)/" }
+		},
+		{
+			"comment": "Presentation must not depend on infrastructure. Wiring lives in src/composition-root/.",
+			"from": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/presentation/" },
+			"name": "presentation-no-infrastructure",
+			"severity": "error",
+			"to": { "path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/infrastructure/" }
+		},
+		{
+			"comment": "Layers must not depend on the composition root. The composition root is the only place that wires modules; it depends on layers, not the reverse.",
+			"from": {
+				"path": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(domain|application|infrastructure|presentation)/"
+			},
+			"name": "layers-no-composition-root",
+			"severity": "error",
+			"to": { "path": "^src/composition-root/" }
+		},
+		{
+			"comment": "A bounded context in src/modules/ must not import another bounded context.",
+			"from": { "path": "^src/modules/([^/]+)/" },
+			"name": "cross-context-forbidden",
+			"severity": "error",
+			"to": {
+				"path": "^src/modules/",
+				"pathNot": "^src/modules/$1/"
+			}
+		},
+		{
+			"comment": "Files under src/modules/<context>/ must live under domain/, application/, infrastructure/ or presentation/.",
+			"from": { "path": "^src/modules/[^/]+/(?!(domain|application|infrastructure|presentation)/)[^/]+" },
+			"name": "modules-must-live-in-layers",
+			"severity": "error",
+			"to": {}
+		}
+	],
+	"options": {
+		"doNotFollow": { "path": "node_modules" },
+		"enhancedResolveOptions": {
+			"conditionNames": ["import", "require", "node", "default"],
+			"exportsFields": ["exports"],
+			"extensions": [".ts", ".tsx", ".js", ".jsx", ".json"]
+		},
+		"exclude": {
+			"path": ["__tests__/", "\\.test\\.ts$", "\\.spec\\.ts$", "^tests/"]
+		},
+		"reporterOptions": {
+			"archi": {
+				"collapsePattern": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(domain|application|infrastructure|presentation)/"
+			},
+			"dot": {
+				"collapsePattern": "^src/(modules/[^/]+|shared-kernel/[^/]+)/(domain|application|infrastructure|presentation)/"
+			}
+		},
+		"tsConfig": { "fileName": "tsconfig.json" },
+		"tsPreCompilationDeps": true
+	}
+}

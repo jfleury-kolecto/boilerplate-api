@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+pnpm run check
+
+pnpm run arch
+
+pnpm run dead
+
+pnpm run test
+
+pnpm run build

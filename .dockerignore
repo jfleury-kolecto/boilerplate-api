@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+dist
+*.tsbuildinfo
+
+# Development files
+.env
+.env.*
+!.env.example
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.spec.ts
+vitest.config.ts
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README*.md
+*.md
+!README_DATABASE.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Misc
+.DS_Store
+Thumbs.db
+*.cache
+
+# Source maps (not needed in production)
+*.map
+
+# Biome
+biome.json
